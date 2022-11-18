@@ -1,3 +1,4 @@
+import { UpdateEventParams } from '../../../../utils/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,5 +19,13 @@ export class EventsService {
     const newEvent = this.eventRepository.create({ ...eventDetails });
 
     return this.eventRepository.save(newEvent);
+  }
+
+  updateEvent(id: number, updateEventDetails: UpdateEventParams) {
+    return this.eventRepository.update({ id }, { ...updateEventDetails });
+  }
+
+  deleteEvent(id: number) {
+    return this.eventRepository.delete({ id });
   }
 }

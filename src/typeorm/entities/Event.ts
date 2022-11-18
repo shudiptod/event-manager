@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { Workshop } from './Workshop';
 
 @Entity({ name: 'events' })
 export class Event {
@@ -13,4 +20,8 @@ export class Event {
 
   @Column({ type: 'datetime', nullable: true })
   end_at: Date;
+
+  @OneToMany(() => Workshop, (workshop) => workshop.event)
+  @JoinColumn()
+  workshops: Workshop[];
 }
