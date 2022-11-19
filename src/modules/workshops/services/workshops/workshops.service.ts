@@ -44,4 +44,15 @@ export class WorkshopsService {
   deleteWorkshop(id: number) {
     return this.workshopRepository.delete({ id });
   }
+
+  async findWorkshopDetails(id:number){
+    const workshop = await this.workshopRepository.findOne({where:{id: id}, relations: ['reservations'] });
+    const total_reservations = workshop.reservations.length;
+    delete workshop.reservations;
+    let detailedWorkshop = {
+      ...workshop,
+      total_reservations
+    }
+    return detailedWorkshop;
+  }
 }

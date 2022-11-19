@@ -39,4 +39,9 @@ export class WorkshopsController {
   deleteWorkshopById(@Param('id', ParseIntPipe) id: number) {
     return this.workshopsService.deleteWorkshop(id);
   }
+
+  @Get(':id')
+  getWorkshopDetails(@Param('id',ParseIntPipe) id:number) {
+    return this.workshopsService.findWorkshopDetails(id);
+  }
 }

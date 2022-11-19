@@ -26,8 +26,9 @@ export class ReservationsService {
     workshop_id: number,
     reservationDetails: CreateReservationParams,
   ) {
-    const workshop = await this.workshopRepository.findOneBy({
-      id: workshop_id,
+    const workshop = await this.workshopRepository.findOne({
+      where:{id: workshop_id},
+      relations:['event']
     });
     if (!workshop) {
       throw new HttpException(
@@ -35,11 +36,13 @@ export class ReservationsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const event = workshop.event;
+    delete workshop.event;
     const newReservation = this.reservationRepository.create({
       ...reservationDetails,
       workshop: workshop,
     });
-    return this.reservationRepository.save(newReservation);
+    return this.reservationRepository.save({...newReservation, event:event });
   }
   updateReservation(
     id: number,

@@ -12,7 +12,7 @@ export class EventsService {
   ) {}
 
   findEvents() {
-    return this.eventRepository.find({ relations: ['workshops'] });
+    return this.eventRepository.find();
   }
 
   createEvents(eventDetails: CreateEventParams) {
@@ -27,5 +27,30 @@ export class EventsService {
 
   deleteEvent(id: number) {
     return this.eventRepository.delete({ id });
+  }
+
+  // Task services
+
+  async findEventDetails(id:number){
+    const event = await this.eventRepository.findOne({where:{id: id}, relations: ['workshops'] });
+    const total_workshops = event.workshops.length;
+    delete event.workshops;
+    let detailedEvent = {
+      ...event,
+      total_workshops
+    }
+    return detailedEvent;
+  }
+  async findActiveWorkshops(id:number){
+    const event = await this.eventRepository.findOne({where:{id: id}, relations: ['workshops'] });
+    const currentDateTime = new Date().getTime();
+    let activeWorkshops = [];
+    for(let workshop of event.workshops){
+      let workshopStarts = new Date(workshop.start_at).getTime();
+      if(currentDateTime - workshopStarts <0){
+        activeWorkshops.push(workshop)
+      }
+    }
+    return {...event, workshops:activeWorkshops};
   }
 }
