@@ -21,7 +21,7 @@ export class Event {
   @Column({ type: 'datetime', nullable: true })
   end_at: Date;
 
-  @OneToMany(() => Workshop, (workshop) => workshop.event)
+  @OneToMany(() => Workshop, (workshop) => workshop.event, { cascade: true })
   @JoinColumn()
   workshops: Workshop[];
 }

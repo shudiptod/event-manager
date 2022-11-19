@@ -12,7 +12,7 @@ export class EventsService {
   ) {}
 
   findEvents() {
-    return this.eventRepository.find();
+    return this.eventRepository.find({ relations: ['workshops'] });
   }
 
   createEvents(eventDetails: CreateEventParams) {

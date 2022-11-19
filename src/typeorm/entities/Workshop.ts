@@ -26,11 +26,15 @@ export class Workshop {
   @Column({ type: 'datetime', nullable: true })
   end_at: Date;
 
-  @ManyToOne(() => Event, (event) => event.workshops)
+  @ManyToOne(() => Event, (event) => event.workshops, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'event_id' })
   event: Event;
 
-  @OneToMany(() => Reservation, (reservation) => reservation.workshop)
+  @OneToMany(() => Reservation, (reservation) => reservation.workshop, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'workshop_id' })
   reservations: Reservation[];
 }

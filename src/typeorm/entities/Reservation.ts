@@ -18,7 +18,9 @@ export class Reservation {
   @Column()
   email: string;
 
-  @ManyToOne(() => Workshop, (workshop) => workshop.reservations)
+  @ManyToOne(() => Workshop, (workshop) => workshop.reservations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'workshop_id' })
   workshop: Workshop;
 }
