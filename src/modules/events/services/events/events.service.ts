@@ -1,3 +1,4 @@
+import { ActiveEventWithPaginationParams } from './../../../../utils/types';
 import { UpdateEventParams } from '../../../../utils/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,7 +10,7 @@ import { CreateEventParams } from 'src/utils/types';
 export class EventsService {
   constructor(
     @InjectRepository(Event) private eventRepository: Repository<Event>,
-  ) {}
+  ) { }
 
   findEvents() {
     return this.eventRepository.find();
@@ -31,8 +32,28 @@ export class EventsService {
 
   // Task services
 
-  async findEventDetails(id:number){
-    const event = await this.eventRepository.findOne({where:{id: id}, relations: ['workshops'] });
+  async findActiveEventsWithPagination(paginationParams: ActiveEventWithPaginationParams) {
+    const events = await this.eventRepository.find({ order: { start_at: 'ASC' } });
+    const currentDateTime = new Date().getTime();
+    let activeEvents = [];
+    for (let event of events) {
+      let eventStarts = new Date(event.start_at).getTime();
+      if (currentDateTime - eventStarts < 0) {
+        activeEvents.push(event)
+      }
+    }
+    const total = activeEvents.length;
+    const total_pages = Math.ceil(total / paginationParams.per_page);
+
+    const paginationStartIndex = (paginationParams.current_page - 1) * paginationParams.per_page;
+    const paginationEndIndex = paginationStartIndex + paginationParams.per_page;
+    activeEvents = activeEvents.slice(paginationStartIndex, paginationEndIndex)
+
+    return { events: activeEvents, pagination: { total, total_pages, ...paginationParams } };
+  }
+
+  async findEventDetails(id: number) {
+    const event = await this.eventRepository.findOne({ where: { id: id }, relations: ['workshops'] });
     const total_workshops = event.workshops.length;
     delete event.workshops;
     let detailedEvent = {
@@ -41,16 +62,16 @@ export class EventsService {
     }
     return detailedEvent;
   }
-  async findActiveWorkshops(id:number){
-    const event = await this.eventRepository.findOne({where:{id: id}, relations: ['workshops'] });
+  async findActiveWorkshops(id: number) {
+    const event = await this.eventRepository.findOne({ where: { id: id }, relations: ['workshops'] });
     const currentDateTime = new Date().getTime();
     let activeWorkshops = [];
-    for(let workshop of event.workshops){
+    for (let workshop of event.workshops) {
       let workshopStarts = new Date(workshop.start_at).getTime();
-      if(currentDateTime - workshopStarts <0){
+      if (currentDateTime - workshopStarts < 0) {
         activeWorkshops.push(workshop)
       }
     }
-    return {...event, workshops:activeWorkshops};
+    return { ...event, workshops: activeWorkshops };
   }
 }

@@ -17,7 +17,7 @@ export class ReservationsService {
     @InjectRepository(Workshop)
     private workshopRepository: Repository<Workshop>,
     @InjectRepository(Event) private eventRepository: Repository<Event>,
-  ) {}
+  ) { }
 
   findReservations() {
     return this.reservationRepository.find();
@@ -27,8 +27,8 @@ export class ReservationsService {
     reservationDetails: CreateReservationParams,
   ) {
     const workshop = await this.workshopRepository.findOne({
-      where:{id: workshop_id},
-      relations:['event']
+      where: { id: workshop_id },
+      relations: ['event']
     });
     if (!workshop) {
       throw new HttpException(
@@ -42,7 +42,7 @@ export class ReservationsService {
       ...reservationDetails,
       workshop: workshop,
     });
-    return this.reservationRepository.save({...newReservation, event:event });
+    return this.reservationRepository.save({ ...newReservation, event: event });
   }
   updateReservation(
     id: number,

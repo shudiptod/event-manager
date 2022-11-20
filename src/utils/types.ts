@@ -32,3 +32,8 @@ export type UpdateReservationParams = {
   name: string;
   email: string;
 };
+
+export type ActiveEventWithPaginationParams = {
+  per_page: number;
+  current_page: number
+}

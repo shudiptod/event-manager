@@ -15,7 +15,7 @@ export class WorkshopsService {
     private eventRepository: Repository<Event>,
     @InjectRepository(Reservation)
     private reservationRepository: Repository<Reservation>,
-  ) {}
+  ) { }
 
   findWorkshops() {
     return this.workshopRepository.find();
@@ -45,8 +45,8 @@ export class WorkshopsService {
     return this.workshopRepository.delete({ id });
   }
 
-  async findWorkshopDetails(id:number){
-    const workshop = await this.workshopRepository.findOne({where:{id: id}, relations: ['reservations'] });
+  async findWorkshopDetails(id: number) {
+    const workshop = await this.workshopRepository.findOne({ where: { id: id }, relations: ['reservations'] });
     const total_reservations = workshop.reservations.length;
     delete workshop.reservations;
     let detailedWorkshop = {

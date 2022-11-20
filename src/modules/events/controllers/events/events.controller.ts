@@ -11,12 +11,11 @@ import {
   Put,
   Delete,
   Query,
-  ParseBoolPipe,
 } from '@nestjs/common';
 
 @Controller('events')
 export class EventsController {
-  constructor(private eventsService: EventsService) {}
+  constructor(private eventsService: EventsService) { }
 
   // basic CRUD API starts
 
@@ -47,21 +46,22 @@ export class EventsController {
   // basic CRUD API ends
 
   // Task Endpoints begin
+
   @Get('/active')
   getActiveEventsWithPagination(
-    @Query('per_page',ParseIntPipe) per_page:number,
-    @Query('current',ParseIntPipe) current:number,
+    @Query('per_page', ParseIntPipe) per_page: number,
+    @Query('current_page', ParseIntPipe) current_page: number,
   ) {
-    console.log(per_page,current)
+    return this.eventsService.findActiveEventsWithPagination({ per_page, current_page })
   }
 
   @Get(':id')
-  getEventDetails(@Param('id',ParseIntPipe) id:number) {
+  getEventDetails(@Param('id', ParseIntPipe) id: number) {
     return this.eventsService.findEventDetails(id);
   }
 
   @Get(':id/workshops/active')
-  getActiveWorkshops(@Param('id',ParseIntPipe) id:number){
-return this.eventsService.findActiveWorkshops(id);
+  getActiveWorkshops(@Param('id', ParseIntPipe) id: number) {
+    return this.eventsService.findActiveWorkshops(id);
   }
 }

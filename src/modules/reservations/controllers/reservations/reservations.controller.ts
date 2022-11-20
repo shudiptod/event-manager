@@ -15,7 +15,7 @@ import {
 
 @Controller('reservations')
 export class ReservationsController {
-  constructor(private reservationsService: ReservationsService) {}
+  constructor(private reservationsService: ReservationsService) { }
 
   @Get()
   async getReservations() {
@@ -25,12 +25,11 @@ export class ReservationsController {
 
   @Post()
   createReservation(
-    @Query('workshop_id', ParseIntPipe) workshop_id: number,
     @Body() createReservationDto: CreateReservationDto,
   ) {
+    const { workshop_id, name, email } = createReservationDto;
     return this.reservationsService.createReservation(
-      workshop_id,
-      createReservationDto,
+      workshop_id, { name, email }
     );
   }
 

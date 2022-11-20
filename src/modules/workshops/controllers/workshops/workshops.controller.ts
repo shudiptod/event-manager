@@ -14,7 +14,7 @@ import {
 
 @Controller('workshops')
 export class WorkshopsController {
-  constructor(private workshopsService: WorkshopsService) {}
+  constructor(private workshopsService: WorkshopsService) { }
 
   @Get()
   async getWorkshops() {
@@ -41,7 +41,7 @@ export class WorkshopsController {
   }
 
   @Get(':id')
-  getWorkshopDetails(@Param('id',ParseIntPipe) id:number) {
+  getWorkshopDetails(@Param('id', ParseIntPipe) id: number) {
     return this.workshopsService.findWorkshopDetails(id);
   }
 }
