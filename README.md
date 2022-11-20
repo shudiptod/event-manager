@@ -1,73 +1,178 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Event Manager
 
 ## Installation
 
 ```bash
-$ npm install
+$ yarn install
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+$ yarn start
 
-# watch mode
-$ npm run start:dev
+# watch mode: auto restarting server after file changes 
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
-## Test
+---
+## Database 
+- MySQL
+- Name: `event_manager`
+- PORT: `3306`
+- host: `localhost`
+- username: `root`
+- password: `root`
 
+### NB: Database is configured at src/app.module.ts
+
+--- 
+## Endpoints 
+
+[ 1 ]  Event List API, where we can get all active events with pagination.
+- Endpoint : `/events/active`
+- Method: `GET`
+- Query Parameters: 
+  +  per_page
+  + current_page
+
+
+- Example: http://localhost:3000/events/active?per_page=2&current_page=3
+
+- Response: 
 ```bash
-# unit tests
-$ npm run test
+{
+  "events": [
+    {
+      "id": "15",
+      "title": "Demo Event 6",
+      "start_at": "2023-11-06T18:59:01.000Z",
+      "end_at": "2023-11-29T18:59:01.000Z"
+    }
+  ],
+  "pagination": {
+    "total": 5,
+    "total_pages": 3,
+    "per_page": 2,
+    "current_page": 3
+  }
+}
+```
+[ 2 ] Event Details API, where we can get single event information  
 
-# e2e tests
-$ npm run test:e2e
+- Endpoint : `/events/:id`
+- Method: `GET`
 
-# test coverage
-$ npm run test:cov
+- Example: http://localhost:3000/events/8
+
+- Response: 
+```bash
+{
+  "id": "8",
+  "title": "Bangla Seminar",
+  "start_at": "2022-11-07T00:59:01.000Z",
+  "end_at": "2022-11-10T00:59:01.000Z",
+  "total_workshops": 3
+}
 ```
 
-## Support
+[ 3 ] Workshop List API, where we can get all the active workshops of a single event  
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Endpoint : `/events/:id/workshops/active`
+- Method: `GET`
+
+- Example: http://localhost:3000/events/11/workshops/active
+
+- Response: 
+```bash
+{
+  "id": "11",
+  "title": "Demo Event 2",
+  "start_at": "2023-11-06T18:59:01.000Z",
+  "end_at": "2023-11-29T18:59:01.000Z",
+  "workshops": [
+    {
+      "id": "6",
+      "title": "Demo Workshop 1",
+      "description": "This is a demo workshop",
+      "start_at": "2023-11-07T18:59:01.000Z",
+      "end_at": "2023-11-08T18:59:01.000Z"
+    },
+    {
+      "id": "7",
+      "title": "Demo Workshop 12",
+      "description": "This is a demo workshop",
+      "start_at": "2023-11-07T18:59:01.000Z",
+      "end_at": "2023-11-08T18:59:01.000Z"
+    },
+    {
+      "id": "8",
+      "title": "Demo Workshop 2",
+      "description": "This is a demo workshop",
+      "start_at": "2023-11-07T18:59:01.000Z",
+      "end_at": "2023-11-08T18:59:01.000Z"
+    }
+  ]
+}
+```
+[ 4 ] Workshop Details API, where we can get single workshop information  
+
+- Endpoint : `/workshops/:id`
+- Method: `GET`
+
+- Example: http://localhost:3000/workshops/2
+
+- Response: 
+```bash
+{
+"id": "2",
+"title": "IELTS Listening Workshop",
+"description": "An important part of your IELTS writing mark includes idea organization, easy-to-understand language, and standard writing conventions. Your writing needs to be clearly written and follow a certain style. More specifically, you need well-written paragraphs to get a higher IELTS mark.",
+"start_at": "2022-11-07T00:59:01.000Z",
+"end_at": "2022-11-10T00:59:01.000Z",
+"total_reservations": 6
+}
+```
+
+[ 5 ] A workshop reservation API  
+
+- Endpoint : `/reservations`
+- Method: `POST`
+- Example: http://localhost:3000/reservations
+- Body:
+```bash
+{
+  "workshop_id":3,
+  "name":"New User",
+  "email":"new@mail.com"
+}
+```
+- Response: 
+```bash
+{
+  "name": "New User",
+  "email": "new@mail.com",
+  "workshop": {
+    "id": "3",
+    "title": "Bangla Shahitto",
+    "description": "Bangla amader matrivasha",
+    "start_at": "2022-11-07T18:59:01.000Z",
+    "end_at": "2022-11-07T19:59:01.000Z"
+  },
+  "event": {
+    "id": "8",
+    "title": "Bangla Seminar",
+    "start_at": "2022-11-07T00:59:01.000Z",
+    "end_at": "2022-11-10T00:59:01.000Z"
+  },
+  "id": "13"
+}
+```
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- Author - [Shudipta Das](https://www.linkedin.com/in/shudipta-das-8645241a9/)
